@@ -10,38 +10,42 @@ import (
 // UseArray
 
 func main() {
-	length := 1000000
-	myArray := make([]int, 0, 10)
-	// make rundom values
-	for i := 0; i < length; i++ {
-		item := int(time.Now().UnixNano() / 1000000)
-		myArray = append(myArray, item)
-	}
+	// length := 1000000
+	// myArray := make([]int, 0, 10)
+	// // make rundom values
+	// for i := 0; i < length; i++ {
+	// 	item := int(time.Now().UnixNano() / 1000000)
+	// 	myArray = append(myArray, item)
+	// }
 
 	startTime := time.Now()
 
-	newArry, err := use.UseArray(myArray).
+	myArray := []int{1, 2, 3, 10, 12, 13}
+	newArray := use.UseArray(myArray).
 		Filter(func(item any, index int) bool {
-			return item.(int) > 10
+			return item.(int) >= 10
 		}).
 		Map(func(item any, index int) any {
 			return item.(int) + 1
 		}).
-		// Reduce(func(arr []int, i int, acc int) int {
-		// 	return acc + arr[i]
-		// }, 0).
+		Reduce(
+			func(item any, i int, acc any) any {
+				return acc.(int) + item.(int)
+			},
+			0,
+		).
 		Run()
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	endTime := time.Now()
 
 	fmt.Println("Time: ", endTime.Sub(startTime))
-	fmt.Println("Result: ", len(newArry.([]int)))
-	// for _, v := range newArry.([]int) {
-	// 	fmt.Println(v)
-	// }
+	// fmt.Println("Result: ", len(newArray.([]int)))
+	if len(myArray) < 10 {
+		fmt.Println("Result: ", newArray)
+		// 	for _, v := range newArray.([]int) {
+		// 		fmt.Println(v)
+		// 	}
+	}
 
 	// err := fmt.Errorf("oh noes: %v", os.ErrNotExist)
 	// fmt.Errorf("oh noes: %v", err)
