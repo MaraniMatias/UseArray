@@ -10,17 +10,17 @@ import (
 // UseArray
 
 func main() {
-	// length := 1000000
-	// myArray := make([]int, 0, 10)
-	// // make rundom values
-	// for i := 0; i < length; i++ {
-	// 	item := int(time.Now().UnixNano() / 1000000)
-	// 	myArray = append(myArray, item)
-	// }
+	length := 1000000
+	myArray := make([]int, 0, 10)
+	// make rundom values
+	for i := 0; i < length; i++ {
+		item := int(time.Now().UnixNano() / 1000000)
+		myArray = append(myArray, item)
+	}
 
 	startTime := time.Now()
 
-	myArray := []int{1, 2, 3, 10, 12, 13}
+	// myArray := []int{1, 2, 3, 10, 12, 13}
 	newArray := use.UseArray(myArray).
 		Filter(func(item any, index int) bool {
 			return item.(int) >= 10
@@ -39,14 +39,7 @@ func main() {
 	endTime := time.Now()
 
 	fmt.Println("Time: ", endTime.Sub(startTime))
-	// fmt.Println("Result: ", len(newArray.([]int)))
-	if len(myArray) < 10 {
-		fmt.Println("Result: ", newArray)
-		// 	for _, v := range newArray.([]int) {
-		// 		fmt.Println(v)
-		// 	}
-	}
-
+	fmt.Println("Result: ", newArray)
 	// err := fmt.Errorf("oh noes: %v", os.ErrNotExist)
 	// fmt.Errorf("oh noes: %v", err)
 }
