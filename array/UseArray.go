@@ -41,6 +41,10 @@ type typeFuc struct {
 type array[T any] struct {
 	arr         []T
 	listOfFuncs []typeFuc
+	reduceFn    struct {
+		fn   ReduceFn
+		init any
+	}
 }
 
 func (a *array[T]) Filter(fn FilterFn) Array {
@@ -54,8 +58,10 @@ func (a *array[T]) Map(fn MapFn) Array {
 }
 
 func (a *array[T]) Reduce(fn ReduceFn, init any) Array {
-	args := []any{init}
-	a.listOfFuncs = append(a.listOfFuncs, typeFuc{"reduce", fn, args})
+	// args := []any{init}
+	// a.listOfFuncs = append(a.listOfFuncs, typeFuc{"reduce", fn, args})
+	a.reduceFn.fn = fn
+	a.reduceFn.init = init
 	return a
 }
 
@@ -83,18 +89,6 @@ func (a *array[T]) Run() interface{} {
 	length := len(a.arr)
 	state := make([]T, 0, length)
 
-	var initAcc any
-	var reduceFn ReduceFn
-	last := a.listOfFuncs[len(a.listOfFuncs)-1]
-	if last.typeFn == "reduce" {
-		reduceFn = last.fn.(ReduceFn)
-		initAcc = last.args[0]
-	} else {
-		reduceFn = func(item any, i int, acc any) any {
-			return append(acc.([]any), item)
-		}
-	}
-
 	for i := 0; i < length; i++ {
 		item := a.arr[i]
 		result := every[typeFuc](a.listOfFuncs, func(tFn any, index int) bool {
@@ -106,10 +100,6 @@ func (a *array[T]) Run() interface{} {
 			} else if tfn.typeFn == "filter" {
 				fn := tfn.fn.(FilterFn)
 				return fn(item, index)
-			} else if tfn.typeFn == "reduce" {
-				reduceFn = tfn.fn.(ReduceFn)
-				initAcc = tfn.args[0]
-				return true
 			}
 			return false
 		})
@@ -118,14 +108,17 @@ func (a *array[T]) Run() interface{} {
 		}
 	}
 
-	if initAcc == nil {
-		initAcc = make([]T, 0, len(state))
+	if a.reduceFn.fn != nil {
+		return reduce(state, a.reduceFn.fn, a.reduceFn.init)
 	}
+
+	return reduce(state, func(item any, i int, acc any) any {
+		return append(acc.([]any), item)
+	}, make([]T, 0, len(state)))
 
 	// func reduce[T any, P any](arr []T, fn func(item T, index int, acc P) P, initAcc P) P {
 	// return reduce[T, []T](state.([]T), reduceFn.(ReduceFn), initAcc.([]T)).([]T)
 	// return reduce(state, reduceFn, initAcc).([]T)
-	return reduce(state, reduceFn, initAcc).(T)
 }
 
 // UseArray is a constructor for Array

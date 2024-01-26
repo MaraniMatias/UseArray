@@ -20,7 +20,6 @@ func main() {
 
 	startTime := time.Now()
 
-	// myArray := []int{1, 2, 3, 10, 12, 13}
 	newArray := use.UseArray(myArray).
 		Filter(func(item any, index int) bool {
 			return item.(int) >= 10
