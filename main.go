@@ -10,18 +10,18 @@ import (
 // UseArray
 
 func main() {
-	// length := 1000000
-	// myArray := make([]int, 0, 10)
-	// // make rundom values
-	// for i := 0; i < length; i++ {
-	// 	item := int(time.Now().UnixNano() / 1000000)
-	// 	myArray = append(myArray, item)
-	// }
+	length := 1000000
+	myArray := make([]int, 0, 10)
+	// make rundom values
+	for i := 0; i < length; i++ {
+		item := int(time.Now().UnixNano() / 1000000)
+		myArray = append(myArray, item)
+	}
 
 	startTime := time.Now()
 
-	myArray := []int{10, 2, 30, 4, 5, 6, 7, 8, 9}
-	fmt.Println("Start: ", myArray)
+	// myArray := []int{10, 2, 30, 4, 5, 6, 7, 8, 9}
+	// fmt.Println("Start: ", myArray)
 	newArray := use.UseArray(myArray).
 		Filter(func(item any, index int) bool {
 			return item.(int) >= 10
