@@ -20,6 +20,8 @@ func main() {
 
 	startTime := time.Now()
 
+	// myArray := []int{10, 2, 30, 4, 5, 6, 7, 8, 9}
+	// fmt.Println("Start: ", myArray)
 	newArray := use.UseArray(myArray).
 		Filter(func(item any, index int) bool {
 			return item.(int) >= 10
@@ -27,18 +29,21 @@ func main() {
 		Map(func(item any, index int) any {
 			return item.(int) + 1
 		}).
-		Reduce(
-			func(item any, i int, acc any) any {
-				return acc.(int) + item.(int)
-			},
-			0,
-		).
+		// Reduce(
+		// 	func(item any, i int, acc any) any {
+		// 		return acc.(int) + item.(int)
+		// 	},
+		// 	0,
+		// ).
 		Run()
 
 	endTime := time.Now()
 
 	fmt.Println("Time: ", endTime.Sub(startTime))
-	fmt.Println("Result: ", newArray)
+	fmt.Println("Result: ", len(newArray.([]any)))
+	fmt.Printf("Type: %T\n", newArray)
+	// fmt.Println("Result: ", newArray)
+
 	// err := fmt.Errorf("oh noes: %v", os.ErrNotExist)
 	// fmt.Errorf("oh noes: %v", err)
 }
