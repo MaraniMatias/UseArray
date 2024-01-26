@@ -59,16 +59,6 @@ func (a *array[T]) Reduce(fn ReduceFn, init any) Array {
 	return a
 }
 
-func every[T any](arr []T, fn FilterFn) bool {
-	length := len(arr)
-	for i := 0; i < length; i++ {
-		if !fn(arr[i], i) {
-			return false
-		}
-	}
-	return true
-}
-
 // func reduce[T any, P any](arr []T, fn func(item T, index int, acc P) P, initAcc P) P {
 func reduce[T any](arr []T, fn func(item any, index int, acc any) any, initAcc any) any {
 	length := len(arr)
@@ -79,61 +69,31 @@ func reduce[T any](arr []T, fn func(item any, index int, acc any) any, initAcc a
 	return acc
 }
 
-// func (a *array[T]) Run() interface{} {
-// 	length := len(a.arr)
-// 	state := make([]T, 0, length)
-
-// 	for i := 0; i < length; i++ {
-// 		item := a.arr[i]
-// 		result := every[typeFuc](a.listOfFuncs, func(tFn any, index int) bool {
-// 			tfn := tFn.(typeFuc)
-// 			if tfn.typeFn == "map" {
-// 				fn := tfn.fn.(MapFn)
-// 				item = fn(item, index).(T)
-// 				return true
-// 			} else if tfn.typeFn == "filter" {
-// 				fn := tfn.fn.(FilterFn)
-// 				return fn(item, index)
-// 			}
-// 			return false
-// 		})
-// 		if result {
-// 			state = append(state, item)
-// 		}
-// 	}
-
-// 	if a.reduceFn.fn != nil {
-// 		return reduce(state, a.reduceFn.fn, a.reduceFn.init)
-// 	}
-
-// 	return reduce(state, func(item any, i int, acc any) any {
-// 		return append(acc.([]any), item)
-// 	}, make([]T, 0, len(state)))
-
-// }
-
 func (a *array[T]) Run() any {
-	// if a.reduceFn.fn != nil {
-	// 	return reduce(state, a.reduceFn.fn, a.reduceFn.init)
-	// }
+	if a.reduceFn.fn == nil {
+		a.reduceFn.init = make([]any, 0, len(a.arr))
+		a.reduceFn.fn = func(item any, i int, acc any) any {
+			return append(acc.([]any), item)
+		}
+	}
+
+	rfn := a.reduceFn.fn
+	init := a.reduceFn.init
+
 	return reduce[T](a.arr, func(item any, i int, acc any) any {
 		for _, tFn := range a.listOfFuncs {
 			t := tFn.typeFn
 			fn := tFn.fn
 
-			if t == "filter" {
-				r := fn.(FilterFn)(item, i)
-				if !r {
-					return acc
-				}
+			if t == "filter" && !fn.(FilterFn)(item, i) {
+				return acc
 			}
 			if t == "map" {
 				item = fn.(MapFn)(item, i)
 			}
 		}
-
-		return append(acc.([]any), item)
-	}, make([]any, 0, len(a.arr)))
+		return rfn(item, i, acc)
+	}, init)
 }
 
 // UseArray is a constructor for Array
