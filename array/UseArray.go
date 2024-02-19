@@ -140,7 +140,9 @@ func (a *array[T]) Run() any {
 	if a.reduceFn.fn == nil {
 		a.reduceFn.init = make([]any, 0, len(a.arr))
 		a.reduceFn.fn = func(item any, i int, acc any) any {
-			return append(acc.([]any), item)
+			// return append(acc.([]any), item)
+			acc.([]any)[i] = item
+			return acc
 		}
 	}
 
