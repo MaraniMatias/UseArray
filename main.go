@@ -12,7 +12,7 @@ import (
 func main() {
 	length := 10_000_000
 	myArray := make([]int, 0, 10)
-	// make rundom values
+	// make random values
 	for i := 0; i < length; i++ {
 		item := int(time.Now().UnixNano() / 1000000)
 		myArray = append(myArray, item)

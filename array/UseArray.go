@@ -11,11 +11,11 @@ type (
 	ForEachFn[T any] func(item T, i int, arr []T)
 	// EveryFn is a function for every
 	EveryFn[T any] func(item T, i int) bool
-	// Some is a function for some, return true if some item is true
+	// SomeFn is a function for some, return true if some item is true
 	SomeFn[T any] func(item T, i int) bool
-	// Find is a function for find, return ele, indexñ
+	// FindFn is a function for find, return ele, index
 	FindFn[T any] func(item T, i int) (T, int)
-	// FindLast is a function for findLast,  return ele, index
+	// FindLastFn is a function for findLast,  return ele, index
 	FindLastFn[T any] func(item T, i int) (T, int)
 	// SortFn is a function for sort, return 1 if i > j
 	SortFn[T any] func(arr []T, i int, j int) uint8
@@ -140,7 +140,6 @@ func (a *array[T]) Run() any {
 	if a.reduceFn.fn == nil {
 		a.reduceFn.init = make([]any, 0, len(a.arr))
 		a.reduceFn.fn = func(item any, i int, acc any) any {
-			// return append(acc.([]any), item)
 			acc.([]any)[i] = item
 			return acc
 		}
