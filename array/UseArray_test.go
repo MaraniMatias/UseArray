@@ -19,6 +19,9 @@ func TestArrayOperations(t *testing.T) {
 	}
 }
 
+
+// go test -run=XXX -cpuprofile cpu.prof -bench .
+// go tool pprof cpu.prof
 func BenchmarkArray(b *testing.B) {
 	myArray := []int{10, 2, 30, 4, 5, 6, 7, 8, 9, 23, 134, 23}
 
